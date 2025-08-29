@@ -24,7 +24,7 @@ for i = 1,20 do
     table.insert(Stars,i)
 end
 local Library = loadstring(game:HttpGet(("https://raw.githubusercontent.com/theneutral0ne/wally-modified/refs/heads/main/wally-modified.lua")))()
-local AutoFarmWindow = Library:CreateWindow('Credit: Neutral')
+local AutoFarmWindow = Library:CreateWindow('Made by: Lumix scripts')
 AutoFarmWindow:Toggle("Auto Farm",{},function(value)
 AutoFarm = value
 end)
