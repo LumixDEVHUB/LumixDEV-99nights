@@ -1,8 +1,72 @@
+-- ✅ Load Fluent UI Library
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+-- ✅ Dummy Pelinda stub (replace with real PandaAuth loader when available)
+local Pelinda = {}
+function Pelinda.Init(opts)
+    if opts.Key and opts.Key ~= "" then
+        return "validated!!"
+    else
+        return "invalid key"
+    end
+end
+function Pelinda.GetKeyLink(opts)
+    return "https://pandadevelopment.net/getkey" -- placeholder
+end
+
+-- ✅ Create Fluent Window (Lumix Hub Branding)
+local Window = Fluent:CreateWindow({
+    Title = "Lumix Hub | Key System",
+    SubTitle = "Modern Fluent Edition",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(520, 320),
+    Acrylic = true,
+    Theme = "Dark"
+})
+
+-- ✅ Authentication Tab
+local AuthTab = Window:AddTab({ Title = "🔐 Authentication", Icon = "rbxassetid://4483345998" })
+
+local userKey = ""
+
+-- ✅ Key Input
+AuthTab:AddInput("EnterKey", {
+    Title = "Enter Key",
+    Default = "",
+    Placeholder = "Paste your key here...",
+    Callback = function(value)
+        userKey = value
+    end
+})
+
+-- ✅ Submit Key Button
+AuthTab:AddButton({
+    Title = "Submit Key",
+    Description = "Validate your Lumix Hub key",
+    Callback = function()
+        local status = Pelinda.Init({
+            Service = "lumixhub",
+            SilentMode = true,
+            Key = userKey,
+            SecurityLevel = 3,
+        })
+
+        if status == "validated!!" then
+            Fluent:Notify({
+                Title = "PandaV3",
+                Content = "✅ Lumix Hub Loaded Successfully!",
+                Duration = 3
+            })
+
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+
+-- turn off Roblox default notifications
 LocalPlayer.PlayerGui.Notifications.Normal.Visible = false
+
+-- feature states
 local AutoFarm = false
 local AutoStar = false
 local AutoSword = false
@@ -19,65 +83,100 @@ local AutoCurse = false
 local AutoCurseProgress = false
 local AutoDemonArts = false
 local Star = 1
+
 local Stars = {}
 for i = 1,20 do
     table.insert(Stars,i)
 end
-local Library = loadstring(game:HttpGet(("https://raw.githubusercontent.com/theneutral0ne/wally-modified/refs/heads/main/wally-modified.lua")))()
-local AutoFarmWindow = Library:CreateWindow('Made by: Lumix scripts')
-AutoFarmWindow:Toggle("Auto Farm",{},function(value)
-AutoFarm = value
-end)
-local AutoUpgradeWindow = Library:CreateWindow("Auto Upgrade")
-AutoUpgradeWindow:Toggle("Auto Rank Up",{},function(value)
-AutoRank = value
-end)
-AutoUpgradeWindow:Toggle("Auto Upgrade Haki",{},function(value)
-AutoHaki = value
-end)
-AutoUpgradeWindow:Toggle("Auto Upgrade Spiritual",{},function(value)
-AutoSpirit = value
-end)
-AutoUpgradeWindow:Toggle("Auto Upgrade Curse",{},function(value)
-AutoCurseProgress = value
-end)
-local AutoRollWindow = Library:CreateWindow("Auto Roll")
-AutoRollWindow:Toggle("Auto Star",{},function(value)
-AutoStar = value
-end)
-AutoRollWindow:Dropdown("Star",{list = Stars},function(value)
-Star = value
-end)
-AutoRollWindow:Toggle("Auto Roll Dragon Race",{},function(value)
-AutoDragon = value
-end)
-AutoRollWindow:Toggle("Auto Roll Saiyan Evo",{},function(value)
-AutoSaiyan = value
-end)
-AutoRollWindow:Toggle("Auto Roll Sword",{},function(value)
-AutoSword = value
-end)
-AutoRollWindow:Toggle("Auto Roll Fruit",{},function(value)
-AutoFruit = value
-end)
-AutoRollWindow:Toggle("Auto Roll Pirate Crew",{},function(value)
-AutoPirate = value
-end)
-AutoRollWindow:Toggle("Auto Roll Reiatsu Color",{},function(value)
-AutoReiatsu = value
-end)
-AutoRollWindow:Toggle("Auto Roll Zanpakuto",{},function(value)
-AutoZanpakuto = value
-end)
-AutoRollWindow:Toggle("Auto Roll Curse",{},function(value)
-AutoCurse = value
-end)
-AutoRollWindow:Toggle("Auto Roll Demon Arts",{},function(value)
-AutoDemonArts = value
-end)
 
+-- load Syde UI
+local syde = loadstring(game:HttpGet("https://raw.githubusercontent.com/essencejs/syde/refs/heads/main/source", true))()
+
+syde:Load({
+    Logo = '7488932274',
+    Name = 'Lumixhub AutoFarm v1',
+    Status = 'Stable',
+    Accent = Color3.fromRGB(251, 144, 255),
+    AutoLoad = false,
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = 'LumixDev',
+        FileName = "config"
+    }
+})
+
+local Window = syde:Init({
+    Title = 'LumixDev autofarm',
+    SubText = 'AutoFarm Features'
+})
+
+-- tabs
+local AutoFarmTab = Window:InitTab('Auto Farm')
+local AutoUpgradeTab = Window:InitTab('Auto Upgrade')
+local AutoRollTab = Window:InitTab('Auto Roll')
+
+-- AutoFarm
+AutoFarmTab:Toggle({
+    Title = 'Auto Farm',
+    Value = false,
+    CallBack = function(val)
+        AutoFarm = val
+        syde:Notify({
+            Title = 'Auto Farm',
+            Content = val and 'Enabled' or 'Disabled',
+            Duration = 2
+        })
+    end,
+})
+
+-- Auto Upgrade
+AutoUpgradeTab:Toggle({
+    Title = 'Auto Rank Up',
+    Value = false,
+    CallBack = function(val) AutoRank = val end,
+})
+AutoUpgradeTab:Toggle({
+    Title = 'Auto Upgrade Haki',
+    Value = false,
+    CallBack = function(val) AutoHaki = val end,
+})
+AutoUpgradeTab:Toggle({
+    Title = 'Auto Upgrade Spiritual',
+    Value = false,
+    CallBack = function(val) AutoSpirit = val end,
+})
+AutoUpgradeTab:Toggle({
+    Title = 'Auto Upgrade Curse',
+    Value = false,
+    CallBack = function(val) AutoCurseProgress = val end,
+})
+
+-- Auto Roll
+AutoRollTab:Toggle({
+    Title = 'Auto Star',
+    Value = false,
+    CallBack = function(val) AutoStar = val end,
+})
+AutoRollTab:Dropdown({
+    Title = 'Star',
+    Options = Stars,
+    PlaceHolder = 'Select star...',
+    CallBack = function(val) Star = val end,
+})
+AutoRollTab:Toggle({ Title = 'Auto Roll Dragon Race', Value = false, CallBack = function(val) AutoDragon = val end })
+AutoRollTab:Toggle({ Title = 'Auto Roll Saiyan Evo', Value = false, CallBack = function(val) AutoSaiyan = val end })
+AutoRollTab:Toggle({ Title = 'Auto Roll Sword', Value = false, CallBack = function(val) AutoSword = val end })
+AutoRollTab:Toggle({ Title = 'Auto Roll Fruit', Value = false, CallBack = function(val) AutoFruit = val end })
+AutoRollTab:Toggle({ Title = 'Auto Roll Pirate Crew', Value = false, CallBack = function(val) AutoPirate = val end })
+AutoRollTab:Toggle({ Title = 'Auto Roll Reiatsu Color', Value = false, CallBack = function(val) AutoReiatsu = val end })
+AutoRollTab:Toggle({ Title = 'Auto Roll Zanpakuto', Value = false, CallBack = function(val) AutoZanpakuto = val end })
+AutoRollTab:Toggle({ Title = 'Auto Roll Curse', Value = false, CallBack = function(val) AutoCurse = val end })
+AutoRollTab:Toggle({ Title = 'Auto Roll Demon Arts', Value = false, CallBack = function(val) AutoDemonArts = val end })
+
+-- main loop
 RunService.RenderStepped:Connect(function()
     Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
     if Character and AutoFarm then
         local Closest
         local ClosestMag = 30
@@ -93,6 +192,7 @@ RunService.RenderStepped:Connect(function()
             ReplicatedStorage.Events.To_Server:FireServer({Action = "_Mouse_Click"})
         end
     end
+
     if AutoStar then
         ReplicatedStorage.Events.To_Server:FireServer({Open_Amount = 15,Action = "_Stars",Name = "Star_"..Star})
     end
@@ -136,3 +236,9 @@ RunService.RenderStepped:Connect(function()
         ReplicatedStorage.Events.To_Server:FireServer({Open_Amount = 1,Action = "_Gacha_Activate",Name = "Demon_Arts"})
     end
 end)
+
+syde:Notify({
+    Title = 'LumixHub AutoFarm',
+    Content = 'LumixHub loaded enjoy the script',
+    Duration = 5
+})
